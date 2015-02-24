@@ -8,10 +8,11 @@
 
 #include "Player.h"
 #include <stdio.h>
+#include <Logger.h>
 
 Player::Player()
 {
-	printf("[player] Hello world\n");
+	Info("[player] Hello world\n");
 }
 
 Player::~Player()

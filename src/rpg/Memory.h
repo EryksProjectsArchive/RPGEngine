@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <ForwardDecls.h>
+#include <Logger.h>
+
 #include <Windows.h>
 
 #include <malloc.h>
@@ -32,13 +35,16 @@ public:
 	template <typename T>
 	static T* Allocate(size_t count = 1, bool initialize = false)
 	{
-		if (count < 1) 
+		if (count < 1)
+		{
+			Error("[memory] You must allocate at least one element!");
 			return NULL;
+		}
 
 		size_t bytes = sizeof(T) * count;
 		if ((ms_allocatedMemory + bytes) >= ms_memoryLimit)
 		{
-			printf("[memory] Memory limit reached (%f MB/%f MB)\n", ((float)ms_allocatedMemory / 1024 / 1024), ((float)ms_memoryLimit / 1024 / 1024));
+			Error("[memory] Memory limit reached (%f MB/%f MB)\n", ((float)ms_allocatedMemory / 1024 / 1024), ((float)ms_memoryLimit / 1024 / 1024));
 			RaiseException(EXCEPTION_ACCESS_VIOLATION, 0, 0, NULL);
 			return NULL;
 		}
@@ -58,17 +64,52 @@ public:
 		return mem;
 	}
 
+	// This function allocates memory
+	static void* Allocate(size_t bytes)
+	{
+		if (bytes < 1)
+		{
+			Error("[memory] You must allocate at least one byte");
+			return NULL;
+		}
+
+		if ((ms_allocatedMemory + bytes) >= ms_memoryLimit)
+		{
+			Error("[memory] Memory limit reached (%f MB/%f MB)\n", ((float)ms_allocatedMemory / 1024 / 1024), ((float)ms_memoryLimit / 1024 / 1024));
+			RaiseException(EXCEPTION_ACCESS_VIOLATION, 0, 0, NULL);
+			return NULL;
+		}
+
+		void * data = malloc(bytes);
+		if (data)
+		{
+			ms_allocatedMemory += bytes;
+		}
+
+		return data;
+	}
+
 	// This function is safely removing element from memory
 	template <typename T>
-	static bool Release(T ** ptr)
+	static bool Release(T * ptr)
 	{
-		if (*ptr)
+		if (ptr)
 		{
-			ms_allocatedMemory -= sizeof(*ptr);
-			free(*ptr);
-			*ptr = NULL;
+			ms_allocatedMemory -= sizeof(ptr);
+			free(ptr);
+			ptr = NULL;
 			return true;
 		}
 		return false;
 	}
 };
+
+static void *operator new(size_t n)
+{
+	return Memory::Allocate(n);
+}
+
+static void operator delete(void *data)
+{
+	Memory::Release(data);
+}

@@ -13,12 +13,16 @@
 
 Game::Game()
 {
-	m_player = Memory::Allocate<Player>(1, true);
+	m_player = new Player();
 }
 
 Game::~Game()
 {
-	Memory::Release(&m_player);
+	if (m_player)
+	{
+		delete m_player;
+		m_player = NULL;
+	}
 }
 
 bool Game::OnTick()

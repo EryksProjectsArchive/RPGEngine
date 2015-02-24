@@ -1,24 +1,19 @@
 /*****************************************************
 *
 * RPG - 2d game project
-* File: Game.h
+* File: Singleton.h
 * Author: Eryk Dwornicki
 *
 *****************************************************/
-
 #pragma once
 
-#include <ForwardDecls.h>
-#include <Memory.h>
-
-class Game
+template <typename T>
+class Singleton
 {
 private:
-	Player * m_player;
+	static T ms_singleton;
 
 public:
-	Game();
-	~Game();
-
-	bool OnTick();
+	inline static T& Get() { return ms_singleton; };
+	inline static T* GetPtr() { return &ms_singleton; }
 };

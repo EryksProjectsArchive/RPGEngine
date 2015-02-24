@@ -9,6 +9,7 @@
 #pragma once
 
 #include <ForwardDecls.h>
+#include <Memory.h>
 
 class Player
 {
