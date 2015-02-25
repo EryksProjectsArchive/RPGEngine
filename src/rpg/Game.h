@@ -15,7 +15,9 @@ class Game
 {
 private:
 	Player * m_player;
-
+	Graphics * m_graphics;
+	
+	bool m_running;
 public:
 	Game();
 	~Game();

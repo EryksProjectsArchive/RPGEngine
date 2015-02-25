@@ -9,5 +9,16 @@
 
 #pragma once
 
+// Math
+class Vector2d;
+class Location;
+
+// Graphics
+class Graphics;
+class Sprite;
+
+// Entities
 class Player;
+
+// Others
 class Game;
