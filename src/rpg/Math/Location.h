@@ -21,7 +21,7 @@ public:
 	Location()
 	{
 		rotation = 0.0f;
-		scale = Vector2d(2.0f, 2.0f);
+		scale = Vector2d(1.0f, 1.0f);
 	}
 	
 	Location(const Location& loc)

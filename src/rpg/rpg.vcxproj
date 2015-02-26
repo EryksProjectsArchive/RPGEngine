@@ -81,22 +81,28 @@
   <ItemGroup>
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Graphics\AnimatedSprite.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Graphics\Sprite.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="ForwardDecls.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Graphics\AnimatedSprite.h" />
     <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Graphics\Sprite.h" />
+    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Math\Location.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\Vector2d.h" />
-    <ClInclude Include="Memory.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>

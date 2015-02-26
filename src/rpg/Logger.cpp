@@ -17,7 +17,7 @@ Logger Singleton<Logger>::ms_singleton;
 
 Logger::Logger()
 {
-	m_file = fopen("game.log", "w+");
+	m_file = 0; /* fopen("game.log", "w+")*/;
 }
 
 Logger::~Logger()
@@ -42,40 +42,46 @@ void Logger::SetFile(const char *fileName)
 
 void Logger::Message(const char *message)
 {
-	fprintf(m_file, "[%f] ", Time::Get()/1000.0);
+	if (m_file)
+	{
+		fprintf(m_file, "[%f] ", Time::Get() / 1000.0 / 1000.0 / 60.0);
 
-	fputs(message, m_file);
+		fputs(message, m_file);
 #ifdef _WIN32
-	fputc('\n\r', m_file);
+		fputc('\n\r', m_file);
 #else
-	fputc('\n', m_file);
+		fputc('\n', m_file);
 #endif
-	fflush(m_file);
+		fflush(m_file);
+	}
 
 #if PRINT_TO_SYSTEM_CONSOLE == 1
-	printf("[%f] ", Time::Get() / 1000.0);
+	printf("[%f] ", Time::Get() / 1000.0 / 1000.0 / 60.0);
 	printf("%s\n", message);
 #endif
 }
 
 void Logger::MessageF(const char* message, ...)
 {
-	fprintf(m_file, "[%f] ", Time::Get()/1000.0);
+	if (m_file)
+	{
+		fprintf(m_file, "[%f] ", Time::Get() / 1000.0 / 1000.0 / 60.0);
 
-	va_list args;
-	va_start(args, message);
-	vfprintf(m_file, message, args);
-	va_end(args);
+		va_list args;
+		va_start(args, message);
+		vfprintf(m_file, message, args);
+		va_end(args);
 #ifdef _WIN32
-	fputc('\n\r', m_file);
+		fputc('\n\r', m_file);
 #else
-	fputc('\n', m_file);
+		fputc('\n', m_file);
 #endif
-	fflush(m_file);
+		fflush(m_file);
+	}
 
 #if PRINT_TO_SYSTEM_CONSOLE == 1
-	printf("[%f] ", Time::Get() / 1000.0);
-
+	printf("[%f] ", Time::Get() / 1000.0 / 1000.0 / 60.0);
+	va_list args;
 	va_start(args, message);
 	vprintf(message, args);
 	va_end(args);

@@ -9,15 +9,17 @@
 #pragma once
 
 #include <ForwardDecls.h>
-#include <Memory.h>
 
 class Game
 {
 private:
 	Player * m_player;
 	Graphics * m_graphics;
+	Level * m_level;
 	
 	bool m_running;
+	
+	unsigned long long m_lastTick;
 public:
 	Game();
 	~Game();

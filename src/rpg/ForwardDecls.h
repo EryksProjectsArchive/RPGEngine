@@ -17,8 +17,12 @@ class Location;
 class Graphics;
 class Sprite;
 
+// Input
+class Input;
+
 // Entities
 class Player;
 
 // Others
 class Game;
+class Level;

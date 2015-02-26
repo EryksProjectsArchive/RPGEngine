@@ -78,7 +78,7 @@ public:
 	// Returns normalized vector
 	Vector2d Normalized() const
 	{
-		Vector2d out(*this);
+		Vector2d out = *this;
 		out.Normalize();
 		return out;
 	}
@@ -150,6 +150,62 @@ public:
 	{
 		x /= vec.x;
 		y /= vec.y;
+		return *this;
+	}
+
+	Vector2d& operator+=(float scalar)
+	{
+		x += scalar;
+		y += scalar;
+		return *this;
+	}
+
+	Vector2d& operator-=(float scalar)
+	{
+		x -= scalar;
+		y -= scalar;
+		return *this;
+	}
+
+	Vector2d& operator*=(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
+	Vector2d& operator/=(float scalar)
+	{
+		x /= scalar;
+		y /= scalar;
+		return *this;
+	}
+
+	Vector2d& operator+(float scalar)
+	{
+		x += scalar;
+		y += scalar;
+		return *this;
+	}
+
+	Vector2d& operator-(float scalar)
+	{
+		x -= scalar;
+		y -= scalar;
+		return *this;
+	}
+
+	Vector2d& operator*(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
+	Vector2d& operator/(float scalar)
+	{
+		x /= scalar;
+		y /= scalar;
 		return *this;
 	}
 };
