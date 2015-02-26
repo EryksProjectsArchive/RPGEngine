@@ -48,7 +48,8 @@ public:
 	float GetCameraZoom();
 
 	bool DrawSprite(Sprite* sprite, const glm::mat4& matrix);
-
+	bool DrawSprite(AnimatedSprite* sprite, const glm::mat4& matrix);
+	
 	void DrawTileset(unsigned int vbo, unsigned int ibo, unsigned int vertices, Sprite* sprite, const glm::mat4& matrix);
 
 	void PreRender();

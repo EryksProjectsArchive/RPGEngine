@@ -126,6 +126,10 @@ Sprite::Sprite(const char *fileName)
 		}
 		fclose(fp);
 	}
+	else
+	{
+		Error("[sprite] Unable to open file %s", fileName);
+	}
 }
 
 Sprite::~Sprite()

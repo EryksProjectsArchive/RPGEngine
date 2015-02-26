@@ -16,6 +16,7 @@ class Location;
 // Graphics
 class Graphics;
 class Sprite;
+class AnimatedSprite;
 
 // Input
 class Input;

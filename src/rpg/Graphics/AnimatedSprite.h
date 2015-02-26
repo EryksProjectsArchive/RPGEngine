@@ -22,6 +22,19 @@ struct AnimationFrame
 		h = 0.0f;
 	}
 
+	AnimationFrame(const AnimationFrame& frame)
+	{
+		x = frame.x;
+		y = frame.y;
+		w = frame.w;
+		h = frame.h;
+	}
+
+	~AnimationFrame()
+	{
+
+	}
+
 	AnimationFrame& operator=(const AnimationFrame& frame)
 	{
 		x = frame.x;
@@ -46,11 +59,49 @@ struct Animation
 		framesCount = 0;
 		frames = NULL;
 	}
+
+	Animation(const Animation& anim)
+	{
+		strcpy(name, anim.name);
+		interval = anim.interval;
+		framesCount = anim.framesCount;
+		if (framesCount > 0)
+		{
+			frames = new AnimationFrame[framesCount];
+			for (unsigned int i = 0; i < framesCount; ++i)
+				frames[i] = anim.frames[i];
+		}
+	}
+
+	~Animation()
+	{
+		if (frames)
+		{
+			delete[]frames;
+			frames = NULL;
+		}
+	}
+
+	Animation& operator=(const Animation& anim)
+	{
+		strcpy(name, anim.name);
+		interval = anim.interval;
+		framesCount = anim.framesCount;
+		if (framesCount > 0)
+		{
+			frames = new AnimationFrame[framesCount];
+			for (unsigned int i = 0; i < framesCount; ++i)
+				frames[i] = anim.frames[i];
+		}
+		return *this;
+	}
 };
 
 class AnimatedSprite : public Sprite
 {
 private:
+	Sprite * m_texture;
+
 	unsigned int m_animationsCount;
 	Animation *m_animations;
 
@@ -62,6 +113,10 @@ private:
 public:
 	AnimatedSprite(const char* fileName);
 	virtual ~AnimatedSprite();
+
+	virtual unsigned int GetTextureId();
+
+	virtual Vector2d GetSize();
 
 	virtual bool IsCurrentlyPlayedAnim(const char* name);
 	virtual bool PlayAnim(const char *name);

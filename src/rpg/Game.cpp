@@ -24,9 +24,7 @@ Game::Game()
 	m_graphics = new Graphics();
 	m_level = new Level();
 	m_player = new Player(m_level);
-
-	new AnimatedSprite("../Data/Definitions/AnimatedSprites/Player.as");
-
+	
 	m_running = true;
 	m_lastTick = 0;
 }

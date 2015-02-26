@@ -17,7 +17,7 @@ private:
 	Vector2d m_velocity;
 	Location m_location;
 	glm::mat4 m_matrix;
-	Sprite* m_sprite;
+	AnimatedSprite* m_sprite;
 	float m_speed;
 	bool m_isRunning;
 	Level *m_level;

@@ -7,7 +7,9 @@
 *****************************************************/
 
 #include "Graphics.h"
+
 #include "Sprite.h"
+#include "AnimatedSprite.h"
 
 #include <Logger.h>
 
@@ -314,6 +316,117 @@ bool Graphics::DrawSprite(Sprite* sprite, const glm::mat4& matrix)
 	if (aUV != -1)
 		glEnableVertexAttribArray(aUV);
 	
+	// Set pointer to position
+	if (aPosition != -1)
+		glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+
+	// Set pointer to color
+	if (aColor != -1)
+		glVertexAttribPointer(aColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void *)offsetof(Vertex, color));
+
+	// Set pointer to uv
+	if (aUV != -1)
+		glVertexAttribPointer(aUV, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, u));
+
+	// Draw our vbo
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbind array buffer
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Disable attribs
+	if (aPosition != -1)
+		glDisableVertexAttribArray(aPosition);
+
+	if (aColor != -1)
+		glDisableVertexAttribArray(aColor);
+
+	if (aUV != -1)
+		glDisableVertexAttribArray(aUV);
+
+	// Disable blending
+	glDisable(GL_BLEND);
+	return true;
+}
+
+bool Graphics::DrawSprite(AnimatedSprite* sprite, const glm::mat4& matrix)
+{
+	// Calculate mvp
+	glm::mat4 model = m_cameraMatrix * glm::mat4(matrix);
+	Vector2d size = sprite->GetSize();
+
+	if (!IsRectVisible(model[3][0], model[3][1], size.x, size.y))
+	{
+		return false;
+	}
+	glm::mat4 mvp = m_orthoMatrix * model;
+
+	// Enable alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Bind vertex buffer object
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+	// Update vbo to sprite dimensions
+	Vertex *data = static_cast<Vertex *>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+
+	Vector2d halfSize = size / 2.0f;
+
+	AnimationFrame frame = sprite->GetCurrentFrameData();
+
+	unsigned int color = 0xFFFFFFFF;
+	float opacity = sprite->GetOpacity();
+	if (opacity < 1.0f)
+		color = 0x00FFFFFF | (static_cast<unsigned int>(floor(255.0f * opacity)) << 24);
+
+	Vertex v[4] = {
+		{ -halfSize.x, -halfSize.y, color, frame.x, frame.y },
+		{ -halfSize.x, halfSize.y, color, frame.x, frame.h },
+		{ halfSize.x, -halfSize.y, color, frame.w, frame.y },
+		{ halfSize.x, halfSize.y, color, frame.w, frame.h }
+	};
+
+	memcpy(data, v, sizeof(Vertex) * 4);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+
+	// Set basic shader as current program
+	glUseProgram(m_basicShader);
+
+	// Set model view projection matrix
+	unsigned int position = glGetUniformLocation(m_basicShader, "mvp");
+	if (position != -1)
+		glUniformMatrix4fv(position, 1, GL_FALSE, glm::value_ptr(mvp));
+
+	// Set texture
+	unsigned int textureId = sprite->GetTextureId();
+	if (textureId != -1 && glIsTexture(textureId))
+	{
+		unsigned int texPosition = glGetUniformLocation(m_basicShader, "texture");
+		if (texPosition != -1)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, textureId);
+			glUniform1i(texPosition, 0);
+		}
+	}
+
+	// Grab vertex position attrib location
+	unsigned int aPosition = glGetAttribLocation(m_basicShader, "vertexPosition");
+	if (aPosition != -1)
+		glEnableVertexAttribArray(aPosition);
+
+	// Grab vertex color attrib location
+	unsigned int aColor = glGetAttribLocation(m_basicShader, "vertexColor");
+	if (aColor != -1)
+		glEnableVertexAttribArray(aColor);
+
+	// Grab vertex uv attrib location
+	unsigned int aUV = glGetAttribLocation(m_basicShader, "vertexUV");
+	if (aUV != -1)
+		glEnableVertexAttribArray(aUV);
+
 	// Set pointer to position
 	if (aPosition != -1)
 		glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);

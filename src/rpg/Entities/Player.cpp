@@ -13,7 +13,7 @@
 #include "Player.h"
 
 #include <Graphics/Graphics.h>
-#include <Graphics/Sprite.h>
+#include <Graphics/AnimatedSprite.h>
 
 #include <Input/Input.h>
 
@@ -25,7 +25,8 @@ Player::Player(Level* level)
 	m_isRunning = false;
 
 	SetPosition(Vector2d(0.0f, 0.0f));
-	m_sprite = new Sprite("../Data/Sprites/character.bmp");
+	m_sprite = new AnimatedSprite("../Data/Definitions/AnimatedSprites/Player.as");
+	m_sprite->PlayAnim("Idle");
 }
 
 Player::~Player()
@@ -122,6 +123,7 @@ void Player::Render(Graphics& graphics)
 
 void Player::Update(float deltaTime)
 {
+	m_sprite->Update(deltaTime);
 	m_isRunning = Input::IsKeyDown(GLFW_KEY_LEFT_SHIFT);
 	m_speed = (m_isRunning ? 0.2f : 0.1f) * deltaTime;
 	
@@ -167,10 +169,20 @@ void Player::Update(float deltaTime)
 	}
 	m_lastTileType = type;
 	
-	if (m_velocity.Length() > 0.0f)
+	float velLength = m_velocity.Length();
+	if (velLength > 0.0f)
 	{
 		m_location.position += m_velocity * deltaTime;
 		UpdateMatrix();
-		m_velocity /= 10 * deltaTime;		
+		m_velocity /= 10 * deltaTime;
+
+		const char * desiredAnimation = Input::IsKeyDown(GLFW_KEY_LEFT_SHIFT) ? "Run" : "Walk";
+		if (strcmp(m_sprite->GetCurrentAnimName(), desiredAnimation) != 0)
+			m_sprite->PlayAnim(desiredAnimation);			
+	}
+	else
+	{
+		if (strcmp(m_sprite->GetCurrentAnimName(), "Idle") != 0)		
+			m_sprite->PlayAnim("Idle");		
 	}
 } 
