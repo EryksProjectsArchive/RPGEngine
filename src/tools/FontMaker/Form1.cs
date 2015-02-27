@@ -224,24 +224,26 @@ namespace FontMaker
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            float _scaleX = (((float)targetWidth / sourceWidth) * (float)scaleX);
-            float _scaleY = (((float)targetHeight / sourceHeight) * (float)scaleY);
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+
+            float _scaleX = ((float)targetWidth / sourceWidth) * (float)scaleX;
+            float _scaleY = ((float)targetHeight / sourceHeight) * (float)scaleY;
 
             // Draw helper lines     
             if(targetWidth != 0 && sourceWidth != 0)
             {
-                int _y = 0;
+                int _y = ((int)_scaleY);
                 for (int y = 0; y < pictureBox1.Height; ++y)
                 {
                     e.Graphics.DrawLine(new Pen(Color.FromArgb(50, 0, 0, 0)), new Point(0, _y), new Point(pictureBox1.Width, _y));
-                    _y += ((int)_scaleY+1);
+                    _y += ((int)_scaleY);
                 }
 
                 int _x = 0;
                 for (int x = 0; x < pictureBox1.Width; ++x)
                 {
                     e.Graphics.DrawLine(new Pen(Color.FromArgb(50, 0, 0, 0)), new Point(_x, 0), new Point(_x, pictureBox1.Height));
-                    _x += ((int)_scaleX+1);
+                    _x += ((int)_scaleX);
                 }
             }
             
@@ -466,7 +468,7 @@ namespace FontMaker
             }
             else
             {
-                if(MessageBox.Show("Are you sure do you want to skip saving? Your changes won't be saved.", "Question", MessageBoxButtons.YesNo) == DialogResult.No)
+                if(MessageBox.Show("Are you sure do you want to skip saving? Unsaved changes will be lose.", "Question", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     SaveFontAs();
                 }
@@ -528,6 +530,35 @@ namespace FontMaker
             else
             {
                 this.toolStripStatusLabel1.Text = "To see current pixel coordinates load texture";
+            }
+        }
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (listView1.Items.Count > 0)
+            {
+                float _scaleX = ((float)targetWidth / sourceWidth) * (float)scaleX;
+                float _scaleY = ((float)targetHeight / sourceHeight) * (float)scaleY;
+
+                double w = (((double)sourceWidth / scaleX) * ((double)e.X / targetWidth));
+                double h = (((double)sourceHeight / scaleY) * ((double)e.Y / targetHeight));
+
+
+                int x = (imagePos.X + (int)w);
+                int y = (imagePos.Y + (int)h);
+                Point mousePixelizedPosition = new Point(x, y);
+
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    Rectangle rect = new Rectangle(Convert.ToInt32(item.SubItems[1].Text.ToString()), Convert.ToInt32(item.SubItems[2].Text.ToString()), Convert.ToInt32(item.SubItems[3].Text.ToString()), Convert.ToInt32(item.SubItems[4].Text.ToString()));
+                    if(rect.Contains(mousePixelizedPosition))
+                    {
+                        listView1.Focus();
+                        item.Selected = true;
+                        listView1.Refresh();
+                        break;
+                    }
+                }
             }
         }
 

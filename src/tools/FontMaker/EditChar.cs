@@ -60,6 +60,8 @@ namespace FontMaker
             this.item = item;
             this.rect = rect;
             CropImage(this.rect);
+
+            labelError.Visible = false;
         }
 
         public void UpdateImage(Bitmap sourceImage)
@@ -83,10 +85,15 @@ namespace FontMaker
                 this.rect.X = x;
 
                 CropImage(this.rect);
+                textBoxX.BackColor = Color.White;
+                labelError.Visible = false;
             }
             catch (Exception exception)
             {
-                MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                //MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                textBoxX.BackColor = Color.Red;
+                labelError.Visible = true;
+                labelError.Text = "Invalid X format. Must be a number.";
             }
         }
 
@@ -98,10 +105,15 @@ namespace FontMaker
                 this.rect.Y = y;
 
                 CropImage(this.rect);
+                textBoxY.BackColor = Color.White;
+                labelError.Visible = false;
             }
             catch (Exception exception)
             {
-                MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                //MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                textBoxY.BackColor = Color.Red;
+                labelError.Visible = true;
+                labelError.Text = "Invalid Y format. Must be a number.";
             }
         }
 
@@ -113,10 +125,15 @@ namespace FontMaker
                 this.rect.Width = width;
 
                 CropImage(this.rect);
+                textBoxWidth.BackColor = Color.White;
+                labelError.Visible = false;
             }
             catch (Exception exception)
             {
-                MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                //MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                textBoxWidth.BackColor = Color.Red;
+                labelError.Visible = true;
+                labelError.Text = "Invalid Width format. Must be a number.";
             }
         }
 
@@ -128,10 +145,16 @@ namespace FontMaker
                 this.rect.Height = height;
 
                 CropImage(this.rect);
+                textBoxHeight.BackColor = Color.White;
+                labelError.Visible = false;
             }
             catch (Exception exception)
             {
-                MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                //MessageBox.Show("This value must be integer! ("+exception.Message.ToString()+")");
+                textBoxHeight.BackColor = Color.Red;
+
+                labelError.Visible = true;
+                labelError.Text = "Invalid Height format. Must be aa number.";
             }
         }
     }

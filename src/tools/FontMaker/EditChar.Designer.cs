@@ -37,6 +37,7 @@
             this.textBoxWidth = new System.Windows.Forms.TextBox();
             this.textBoxHeight = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.labelError = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -121,11 +122,24 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // labelError
+            // 
+            this.labelError.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelError.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.labelError.Location = new System.Drawing.Point(199, 135);
+            this.labelError.Name = "labelError";
+            this.labelError.Size = new System.Drawing.Size(168, 26);
+            this.labelError.TabIndex = 9;
+            this.labelError.Text = "label3";
+            this.labelError.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelError.Visible = false;
+            // 
             // EditChar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 208);
+            this.Controls.Add(this.labelError);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBoxHeight);
             this.Controls.Add(this.textBoxWidth);
@@ -135,7 +149,11 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "EditChar";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EditChar";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -154,5 +172,6 @@
         private System.Windows.Forms.TextBox textBoxWidth;
         private System.Windows.Forms.TextBox textBoxHeight;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label labelError;
     }
 }
