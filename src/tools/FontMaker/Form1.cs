@@ -82,6 +82,8 @@ namespace FontMaker
 
             bmGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             bmGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+            bmGraphics.SmoothingMode = SmoothingMode.None;
+
             bmGraphics.DrawImage(sourceImage,
                                  new Rectangle(0, 0, targetWidth, targetHeight),
                                  new Rectangle(0, 0, sourceWidth, sourceHeight),
@@ -109,7 +111,8 @@ namespace FontMaker
             bmGraphics.Clear(Color.Black);
 
             bmGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-            bmGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+            bmGraphics.PixelOffsetMode = PixelOffsetMode.Half;
+            bmGraphics.SmoothingMode = SmoothingMode.None;
 
             bmGraphics.DrawImage(sourceImage, new Rectangle(0, 0, targetWidth, targetHeight),
                                  new Rectangle(imagePos.X, imagePos.Y, (int)(sourceWidth / scaleX), (int)(sourceHeight / scaleY)),
@@ -537,6 +540,11 @@ namespace FontMaker
                     e.Cancel = true;
                 }
             }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

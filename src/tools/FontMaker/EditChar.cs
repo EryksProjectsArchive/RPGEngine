@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,9 +37,9 @@ namespace FontMaker
 
                 Graphics graphics = Graphics.FromImage(tmp);
 
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
-                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.PixelOffsetMode = PixelOffsetMode.Half;
+                graphics.SmoothingMode = SmoothingMode.None;
                 graphics.Clear(Color.Black);
 
                 graphics.DrawImage(sourceImage, new Rectangle(0, 0, pb.Width, pb.Height), this.rect, GraphicsUnit.Pixel);
