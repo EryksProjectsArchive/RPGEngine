@@ -12,11 +12,13 @@
 // Math
 class Vector2d;
 class Location;
+class Rectangle;
 
 // Graphics
 class Graphics;
 class Sprite;
 class AnimatedSprite;
+class Font;
 
 // Input
 class Input;

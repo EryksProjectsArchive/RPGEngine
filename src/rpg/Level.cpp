@@ -46,8 +46,7 @@ Level::Level()
 	m_bounds.min = Vector2d(m_start.x, m_start.y);
 	m_bounds.max = Vector2d(-m_start.x, -m_start.y);
 
-
-	m_matrix = glm::translate(glm::mat4(), glm::vec3(m_start.x, m_start.y, 0));
+	m_matrix = glm::translate(glm::mat4(), glm::vec3((int)m_start.x, (int)m_start.y, 0));
 
 	glGenBuffers(1, &m_vbo);
 	glGenBuffers(1, &m_ibo);
@@ -74,9 +73,28 @@ Level::Level()
 		{
 			unsigned int XX = rand() % 20;
 			TileType type = XX == 2 ? TILE_TYPE_DIRT : TILE_TYPE_GRASS;
-			if (XX == 10)
+			switch (XX)
 			{
+			case 1:
+				type = TILE_TYPE_DIRT;
+				break;
+			case 2:
 				type = TILE_TYPE_ICE;
+				break;
+			case 3:
+			case 4:
+				type = TILE_TYPE_GRASS_2;
+				break;
+			case 5:
+			case 6:
+				type = TILE_TYPE_GRASS_3;
+				break;
+			case 7:
+				type = TILE_TYPE_SAND;
+				break;
+			default:
+				type = TILE_TYPE_GRASS;
+				break;
 			}
 
 			m_tiles[x][y].type = type;
@@ -154,13 +172,17 @@ void Level::SetupTileDefinition()
 {
 	Vector2d vec = m_tileSprites->GetSize();
 	
+	// NOTE: 1 pixel padding is added to affect some Floating-point artifacts on tile textures.
+	float onePixelX = 1.0f / vec.x;
+	float onePixelY = 1.0f / vec.y;
+
 	Vector2d pos;
 	for (unsigned int i = 0; i < TILE_TYPE_COUNT; ++i)
 	{
-		m_tileDefs[i].x = pos.x/vec.x;
-		m_tileDefs[i].y = 1.0f - (pos.y / vec.y);
-		m_tileDefs[i].w = (pos.x + m_tileSize) / vec.x;
-		m_tileDefs[i].h = 1.0f - ((pos.y + m_tileSize) / vec.y);
+		m_tileDefs[i].x = (pos.x + onePixelX)/ vec.x;
+		m_tileDefs[i].y = 1.0f - ((pos.y + onePixelY) / vec.y);
+		m_tileDefs[i].w = ((pos.x + m_tileSize) - onePixelX) / vec.x;
+		m_tileDefs[i].h = 1.0f - (((pos.y + m_tileSize) - onePixelY) / vec.y);
 
 		pos.x += m_tileSize;
 		if (pos.x >= vec.x)

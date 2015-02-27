@@ -417,7 +417,7 @@ AnimatedSprite::AnimatedSprite(const char* fileName)
 			// Parse animations
 			if (tmpAnims.size() > 0 && m_texture && framesCount > 0 && frameWidth > 0 && frameHeight > 0)
 			{
-				m_size = Vector2d(frameWidth, frameHeight);
+				m_size = Vector2d((float)frameWidth, (float)frameHeight);
 				Vector2d textureSize = m_texture->GetSize();
 
 				std::vector<AnimationFrame> readyToUseFrames;
@@ -620,7 +620,7 @@ void AnimatedSprite::Update(float deltaTime)
 	{
 		if (m_currentlyPlayedAnim->framesCount > 1)
 		{
-			m_timeToChangeFrame -= (deltaTime / 1000.0f);
+			m_timeToChangeFrame -= deltaTime;
 			if (m_timeToChangeFrame <= 0.0f)
 			{
 				m_currentFrame++;

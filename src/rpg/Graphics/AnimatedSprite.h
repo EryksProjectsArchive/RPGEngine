@@ -123,7 +123,7 @@ public:
 	virtual void PauseAnim();
 	virtual const char * GetCurrentAnimName();
 
-	AnimationFrame GetCurrentFrameData();
+	virtual AnimationFrame GetCurrentFrameData();
 
 	virtual void Update(float deltaTime);
 };

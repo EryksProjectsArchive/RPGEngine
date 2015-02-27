@@ -60,7 +60,6 @@ Sprite::Sprite(const char *fileName)
 	m_size = Vector2d(50, 50);
 	m_opacity = 1.0f;
 
-	Info("[sprite] %s", fileName);
 	FILE *fp = fopen(fileName, "rb");
 	if (fp)
 	{
@@ -95,7 +94,7 @@ Sprite::Sprite(const char *fileName)
 				unsigned char alphaKey[3] = { 51, 255, 0 };
 				unsigned char *pixels = new unsigned char[infoHeader.width * infoHeader.height * 4];
 				unsigned char *p = pixels;
-				for (unsigned int i = 0; i < infoHeader.width * infoHeader.height; ++i)
+				for (long i = 0; i < infoHeader.width * infoHeader.height; ++i)
 				{
 					unsigned char b = *rawPixelsPtr++;
 					unsigned char g = *rawPixelsPtr++;
@@ -111,13 +110,15 @@ Sprite::Sprite(const char *fileName)
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, infoHeader.width, infoHeader.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
 				CATCH_ERROR;
 				delete[]pixels;
 				delete[]rawPixels;
+
+				Info("[sprite] '%s' has been loaded", fileName);
 			}
 			else
 			{

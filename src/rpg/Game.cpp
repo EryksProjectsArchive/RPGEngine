@@ -16,6 +16,7 @@
 
 #include "Graphics/Graphics.h"
 #include "Graphics/AnimatedSprite.h"
+#include "Graphics/Font.h"
 
 #include "Input/Input.h"
 
@@ -24,7 +25,6 @@ Game::Game()
 	m_graphics = new Graphics();
 	m_level = new Level();
 	m_player = new Player(m_level);
-	
 	m_running = true;
 	m_lastTick = 0;
 }
@@ -53,12 +53,12 @@ Game::~Game()
 bool Game::OnTick()
 {
 	unsigned long long now = Time::Get();
-	float deltaTime = (float)(now - m_lastTick) / 1000.0f;
+	float deltaTime = (float)(now - m_lastTick) / 1000.0f / 1000.0f;
 	// Update window
 	if (m_graphics)
 	{
 		char title[32] = { 0 };
-		sprintf(title, "RPG - FPS: %.01f", 1000.0/deltaTime);
+		sprintf(title, "RPG - FPS: %.01f", 1.0/deltaTime);
 		m_graphics->SetWindowTitle(title);
 
 		if (!m_graphics->UpdateWindow())
@@ -86,20 +86,22 @@ bool Game::OnTick()
 		float scroll = Input::GetMouseScroll();
 		if (scroll > 0.0f)
 		{
-			float zoom = m_graphics->GetCameraZoom() - (1.0f * deltaTime);
+			float zoom = m_graphics->GetCameraZoom() - (10.0f * deltaTime);
 			if (zoom < 1.0f)
 				zoom = 1.0f;
 			m_graphics->SetCameraZoom(zoom);
 		}
 		else if (scroll < 0.0f)
 		{
-			float zoom = m_graphics->GetCameraZoom() + (1.0f * deltaTime);
+			float zoom = m_graphics->GetCameraZoom() + (10.0f * deltaTime);
 			if (zoom > 2.5f)
 				zoom = 2.5f;
 			m_graphics->SetCameraZoom(zoom);
 		}
 
 		m_graphics->SetCameraPosition(m_player->GetPosition());
+
+		
 
 		m_graphics->PostRender();
 	}

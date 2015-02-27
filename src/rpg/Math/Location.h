@@ -37,6 +37,6 @@ public:
 
 	glm::mat4 ToMatrix()
 	{
-		return glm::translate(glm::mat4(), glm::vec3(position.x, position.y, 0)) * glm::scale(glm::mat4(), glm::vec3(scale.x, scale.y, 1)) * glm::mat4(glm::rotate(glm::mat3(), rotation));
+		return glm::translate(glm::mat4(), glm::vec3((int)position.x, (int)position.y, 0)) * glm::scale(glm::mat4(), glm::vec3(scale.x, scale.y, 1)) * glm::mat4(glm::rotate(glm::mat3(), rotation));
 	}
 };

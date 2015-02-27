@@ -22,6 +22,8 @@ private:
 	bool m_isRunning;
 	Level *m_level;
 	TileType m_lastTileType;
+	float m_runPoints;
+	Font* m_hudFont;
 
 	void UpdateMatrix();	
 public:

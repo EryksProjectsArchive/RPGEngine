@@ -14,6 +14,7 @@
 
 #include <Graphics/Graphics.h>
 #include <Graphics/AnimatedSprite.h>
+#include <Graphics/Font.h>
 
 #include <Input/Input.h>
 
@@ -21,10 +22,14 @@ Player::Player(Level* level)
 {
 	m_lastTileType = TILE_TYPE_EMPTY;
 	m_level = level;
-	m_speed = 2.0f;
+	m_speed = 200.0f;
 	m_isRunning = false;
+	m_runPoints = 10.0f;
+	m_hudFont = new Font("../Data/Fonts/Rotkiewka.font");
 
+	m_location.scale = Vector2d(0.8f, 0.8f);
 	SetPosition(Vector2d(0.0f, 0.0f));
+	
 	m_sprite = new AnimatedSprite("../Data/Definitions/AnimatedSprites/Player.as");
 	m_sprite->PlayAnim("Idle");
 }
@@ -35,6 +40,12 @@ Player::~Player()
 	{
 		delete m_sprite;
 		m_sprite = 0;
+	}
+
+	if (m_hudFont)
+	{
+		delete m_hudFont;
+		m_hudFont = 0;
 	}
 }
 
@@ -119,19 +130,47 @@ void Player::Render(Graphics& graphics)
 		r = atan2f(dirn.x, -dirn.y);
 	}
 	graphics.DrawSprite(m_sprite, glm::translate(glm::mat4(), glm::vec3(100, 100, 0)) * glm::mat4(glm::rotate(glm::mat3(), r)));
+
+	// Draw hud
+	m_hudFont->Draw(&graphics, Vector2d(3, 24), Color(1, 0, 0, 0), "Run points:");
+	m_hudFont->Draw(&graphics, Vector2d(2, 23), Color(1, 1, 1, 1), "Run points:");
+	graphics.DrawRectangle(Rectangle(110, 20, 100, 20), Color(0.5f, 0, 0, 0));
+	graphics.DrawRectangle(Rectangle(112, 22, 96, 16), Color(0.5f, 1, 0.4f, 0));
+	graphics.DrawRectangle(Rectangle(112, 22, 96 * (m_runPoints / 10.0f), 16), Color(1.0f, 1, 0.4f, 0));
+	// sdsd
 }
 
 void Player::Update(float deltaTime)
 {
 	m_sprite->Update(deltaTime);
 	m_isRunning = Input::IsKeyDown(GLFW_KEY_LEFT_SHIFT);
-	m_speed = (m_isRunning ? 0.2f : 0.1f) * deltaTime;
-	
+	m_speed = (m_isRunning ? 500.0f : 200.0f);
+
+	if (m_isRunning)
+	{
+		m_runPoints -= 2.0f * deltaTime;	
+		if (m_runPoints < 0.0f)
+		{
+			m_isRunning = false;
+			m_speed = 200.0f;
+			m_runPoints = 0.0f;
+		}
+	}
+	else 
+	{
+		if (m_runPoints < 10.0f)
+		{
+			m_runPoints += 0.2f * deltaTime;
+			if (m_runPoints > 10.0f)			
+				m_runPoints = 10.0f;			
+		}
+	}
+
 	if (Input::IsKeyDown(GLFW_KEY_LEFT))
 	{
 		float rot = Math::RadianToDegress(GetRotation());
 		
-		rot -= (0.2f * deltaTime);
+		rot -= (100.0f * deltaTime);
 		if (rot <= 0.0f)
 			rot = 360.0f;
 
@@ -141,7 +180,7 @@ void Player::Update(float deltaTime)
 	{
 		float rot = Math::RadianToDegress(GetRotation());
 
-		rot += (0.2f * deltaTime);
+		rot += (100.0f * deltaTime);
 		if (rot >= 360.0f)
 			rot = 0.0f;
 
@@ -164,7 +203,7 @@ void Player::Update(float deltaTime)
 		MoveForward(1.0f);
 		break;
 	case TILE_TYPE_DIRT:
-		m_speed /= 5;
+		m_velocity *= 0.5;
 		break;
 	}
 	m_lastTileType = type;
