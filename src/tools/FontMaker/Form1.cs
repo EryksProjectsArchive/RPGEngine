@@ -38,6 +38,7 @@ namespace FontMaker
             InitializeComponent();
 
             Reset();
+            this.KeyPreview = true;
         }
 
         private void SetImage(String name, PictureBox box)
@@ -282,7 +283,7 @@ namespace FontMaker
         {
             float zoom = (float)trackBar1.Value;
             label2.Text = "Zoom (" + (zoom * 100.0f).ToString("0.0") + "%):";
-            // TODO: Handle it with zooming!
+            // TODO: Handle it when zoomed
             imagePos.X = 0; 
             imagePos.Y = 0;
             if(zoom > 0.0f)
@@ -363,6 +364,8 @@ namespace FontMaker
             newItem.SubItems.Add(new ListViewItem.ListViewSubItem(newItem, "0"));
 
             listView1.Items.Add(newItem);
+
+            OnChanges();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -372,6 +375,7 @@ namespace FontMaker
                 if(MessageBox.Show("Do you really want to remove this character?", "Question", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     listView1.Items.Remove(listView1.SelectedItems[0]);
+                    OnChanges();
                 }
             }
         }
@@ -401,6 +405,7 @@ namespace FontMaker
             item.SubItems[4].Text = rect.Height.ToString();
 
             pictureBox1.Refresh();
+            OnChanges();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -409,6 +414,7 @@ namespace FontMaker
             if (result == DialogResult.OK)
             {
                 SetImage(openFileDialog1.FileName.ToString(), pictureBox1);
+                OnChanges();
             }
         }
 
@@ -457,18 +463,19 @@ namespace FontMaker
 
             writer.Close();
             fontDescriptorPath = fileName;
+            this.toolStripChanges.Visible = false;
         }
 
-        private void SaveFontAs()
+        private void SaveFontAs(bool skipProtection = false)
         {
             saveFileDialog1.FileName = fontDescriptorPath;
             if(saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 SaveToFile(saveFileDialog1.FileName.ToString());
             }
-            else
+            else if(skipProtection == false)
             {
-                if(MessageBox.Show("Are you sure do you want to skip saving? Unsaved changes will be lose.", "Question", MessageBoxButtons.YesNo) == DialogResult.No)
+                if(MessageBox.Show("Are you sure do you want to skip saving? Unsaved changes will be lost.", "Question", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     SaveFontAs();
                 }
@@ -495,20 +502,26 @@ namespace FontMaker
             imagePos = new Point(0, 0);
             pictureBox1.Image = null;
             pictureBox1.Refresh();
+            this.toolStripChanges.Visible = false;
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFontAs();
+            SaveFontAs(true);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            // TODO: Improve
-            if((e.Control && e.KeyCode == Keys.S) && fontDescriptorPath != null)
+            if((e.Control == true && e.KeyCode == Keys.S))
             {
-                MessageBox.Show("Saving");
-                SaveToFile(fontDescriptorPath);
+                if (fontDescriptorPath != null)
+                {
+                    SaveToFile(fontDescriptorPath);
+                }
+                else if(e.Alt)
+                {
+                    SaveFontAs(true);
+                }
             }
         }
 
@@ -566,7 +579,7 @@ namespace FontMaker
         {
             if (!CanCloseWithoutSaving())
             {
-                if (MessageBox.Show("Do you really want to close FontMaker? Unsaved changes won't be saved!", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                if (MessageBox.Show("Do you really want to close FontMaker? Unsaved changes will be lost!", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 {
                     e.Cancel = true;
                 }
@@ -575,7 +588,12 @@ namespace FontMaker
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+        }
 
+        private void OnChanges()
+        {
+            this.toolStripChanges.Text = "Some changes has to be saved press " + (this.fontDescriptorPath != null ? "CTRL + S to save them" : "CTRL + ALT + S to save font descriptor");
+            this.toolStripChanges.Visible = true;
         }
     }
 }
