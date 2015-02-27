@@ -141,8 +141,21 @@ namespace FontMaker
             button3.Enabled = false;
 
             StreamReader reader = new StreamReader(name);
-            string line = null;
-            while((line = reader.ReadLine()) != null)
+            string rawLine = null;
+           
+            List<String> lines = new List<String>();
+            while ((rawLine = reader.ReadLine()) != null)
+            {
+                if ((rawLine.Length == 0) || (rawLine[0] == '#'))
+                    continue;
+
+                lines.Add(rawLine);
+            }
+
+            int step = 100/lines.Count;
+            toolStripLoadingProgressBar.Visible = true;
+            toolStripLoadingProgressBar.Value = 0;            
+            foreach(string line in lines)
             {
                 if ((line.Length == 0) ||  (line[0] == '#'))
                     continue;
@@ -162,7 +175,7 @@ namespace FontMaker
                         else
                         {
                             SetImage(Path.GetDirectoryName(name) + Path.DirectorySeparatorChar + v[1], pictureBox1);
-                        }
+                        }                        
                     }
                 }
                 else if(v.Length == 5)
@@ -182,13 +195,23 @@ namespace FontMaker
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, h.ToString()));
 
                     listView1.Items.Add(item);
-                }                              
+                }
+                toolStripLoadingProgressBar.Value += step;         
             }
             reader.Close();
+            toolStripLoadingProgressBar.Visible = false;
+            
         }
 
         private void oPenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!CanCloseWithoutSaving())
+            {
+                SaveQuestion();
+            }
+
+            Reset();            
+
             DialogResult result = openFileDialog2.ShowDialog();
             if(result == DialogResult.OK)
             {                
@@ -509,7 +532,7 @@ namespace FontMaker
         {
             if (!CanCloseWithoutSaving())
             {
-                if (MessageBox.Show("Do you really wants to close FontMaker? Unsaved changes won't be saved!", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                if (MessageBox.Show("Do you really want to close FontMaker? Unsaved changes won't be saved!", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 {
                     e.Cancel = true;
                 }

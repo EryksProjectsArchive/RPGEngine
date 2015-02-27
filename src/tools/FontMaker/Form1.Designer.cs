@@ -57,6 +57,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripLoadingProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -301,18 +302,27 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripLoadingProgressBar});
             this.statusStrip1.Location = new System.Drawing.Point(0, 566);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(819, 22);
+            this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 16;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(24, 17);
-            this.toolStripStatusLabel1.Text = "0x0";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(239, 17);
+            this.toolStripStatusLabel1.Text = "To see current pixel coordinates load texture";
+            // 
+            // toolStripLoadingProgressBar
+            // 
+            this.toolStripLoadingProgressBar.Name = "toolStripLoadingProgressBar";
+            this.toolStripLoadingProgressBar.Size = new System.Drawing.Size(100, 16);
+            this.toolStripLoadingProgressBar.ToolTipText = "Loading progress";
+            this.toolStripLoadingProgressBar.Visible = false;
             // 
             // Form1
             // 
@@ -383,6 +393,7 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripLoadingProgressBar;
     }
 }
 
