@@ -25,12 +25,13 @@ namespace FontMaker
         private int targetHeight = 0;
         private Bitmap sourceImage = null;
         private Point imagePos = new Point(0, 0);
+        private String imagePath = null;
 
         /* Forms */
         private AddChar addChar = null;
         private EditChar editChar = null;
 
-        public Form1()
+        public Form1(String[] commandLine)
         {
             this.addChar = new AddChar(this);
             this.editChar = new EditChar(this);
@@ -39,12 +40,28 @@ namespace FontMaker
 
             Reset();
             this.KeyPreview = true;
+
+            if(commandLine.Length > 0)
+            {
+                String path = null;
+                String ext = null;
+                try{
+                    path = Path.GetFullPath(commandLine[0]);
+                    ext = Path.GetExtension(path);
+                }catch(Exception e){
+                }
+                if(path != null && ext == ".font")
+                {
+                    SetFontFile(path);
+                }
+            }
         }
 
         private void SetImage(String name, PictureBox box)
         {
             button4.Text = Path.GetFileName(name);
             textureName = button4.Text;
+            this.imagePath = name;
 
             imagePos.X = imagePos.Y = 0;
             sourceImage = new Bitmap(name);
@@ -95,6 +112,68 @@ namespace FontMaker
 
             this.editChar.UpdateImage(sourceImage);
 
+            this.buttonReload.Enabled = true;
+            this.buttonClose.Enabled = true;
+            this.trackBar1.Enabled = true;
+            this.trackBar1.Value = 1;
+        }
+
+        private void ReloadImage()
+        {
+            if (this.imagePath == null)
+                return;
+
+            imagePos.X = imagePos.Y = 0;
+            sourceImage = new Bitmap(this.imagePath);                     
+            scaleX = 1.0f;
+            scaleY = 1.0f;
+
+            sourceWidth = sourceImage.Width;
+            sourceHeight = sourceImage.Height;
+            double ratio;
+
+            if (sourceWidth > sourceHeight)
+            {
+                targetWidth = pictureBox1.Width;
+                ratio = (double)targetWidth / sourceWidth;
+                targetHeight = (int)(ratio * sourceHeight);
+            }
+            else if (sourceWidth < sourceHeight)
+            {
+                targetHeight = pictureBox1.Height;
+                ratio = (double)targetHeight / sourceHeight;
+                targetWidth = (int)(ratio * sourceWidth);
+            }
+            else
+            {
+                targetHeight = pictureBox1.Height;
+                targetWidth = pictureBox1.Width;
+            }
+
+            Bitmap tempBitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height, PixelFormat.Format24bppRgb);
+
+            tempBitmap.SetResolution(sourceImage.HorizontalResolution, sourceImage.VerticalResolution);
+            Graphics bmGraphics = Graphics.FromImage(tempBitmap);
+
+
+            bmGraphics.Clear(Color.Black);
+
+            bmGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            bmGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+            bmGraphics.SmoothingMode = SmoothingMode.None;
+
+            bmGraphics.DrawImage(sourceImage,
+                                 new Rectangle(0, 0, targetWidth, targetHeight),
+                                 new Rectangle(0, 0, sourceWidth, sourceHeight),
+                                 GraphicsUnit.Pixel);
+
+            bmGraphics.Dispose();
+            pictureBox1.Image = tempBitmap;
+
+            this.editChar.UpdateImage(sourceImage);
+
+            this.buttonReload.Enabled = true;
+            this.buttonClose.Enabled = true;
             this.trackBar1.Enabled = true;
             this.trackBar1.Value = 1;
         }
@@ -226,12 +305,13 @@ namespace FontMaker
         private void OnPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 
             float _scaleX = ((float)targetWidth / sourceWidth) * (float)scaleX;
             float _scaleY = ((float)targetHeight / sourceHeight) * (float)scaleY;
 
             // Draw helper lines     
-            if(targetWidth != 0 && sourceWidth != 0)
+            if(targetWidth != 0 && sourceWidth != 0 && scaleX > 1.0f && scaleY > 1.0f)
             {
                 int _y = ((int)_scaleY);
                 for (int y = 0; y < pictureBox1.Height; ++y)
@@ -286,7 +366,7 @@ namespace FontMaker
             // TODO: Handle it when zoomed
             imagePos.X = 0; 
             imagePos.Y = 0;
-            if(zoom > 0.0f)
+            if(zoom > 1.0f)
             {
                 hScrollBar1.Enabled = true;
                 vScrollBar1.Enabled = true;
@@ -503,6 +583,10 @@ namespace FontMaker
             pictureBox1.Image = null;
             pictureBox1.Refresh();
             this.toolStripChanges.Visible = false;
+            this.button4.Text = "None";
+            this.buttonReload.Enabled = false;
+            this.buttonClose.Enabled = false;
+            this.imagePath = null;
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -594,6 +678,30 @@ namespace FontMaker
         {
             this.toolStripChanges.Text = "Some changes has to be saved press " + (this.fontDescriptorPath != null ? "CTRL + S to save them" : "CTRL + ALT + S to save font descriptor");
             this.toolStripChanges.Visible = true;
+        }
+
+        private void buttonReload_Click(object sender, EventArgs e)
+        {
+            ReloadImage();
+        }
+
+        private void buttonClose_Click(object sender, EventArgs e)
+        {
+            if (this.sourceImage != null)
+            {
+                this.sourceImage.Dispose();
+                this.sourceImage = null;
+
+                if (this.editChar.IsDisposed == false)
+                {
+                    this.editChar.UpdateImage(null);
+                }
+
+                this.pictureBox1.Image = null;
+                this.button4.Text = "None";
+                this.buttonReload.Enabled = false;
+                this.buttonClose.Enabled = false;
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ Game::Game()
 	m_player = new Player(m_level);
 	m_running = true;
 	m_lastTick = 0;
+	m_baseFont = new Font("../Data/Fonts/Rotkiewka.font");
 }
 
 Game::~Game()
@@ -48,6 +49,12 @@ Game::~Game()
 		delete m_level;
 		m_level = NULL;
 	}
+
+	if (m_baseFont)
+	{
+		delete m_baseFont;
+		m_baseFont = 0;
+	}
 }
 
 bool Game::OnTick()
@@ -57,10 +64,9 @@ bool Game::OnTick()
 	// Update window
 	if (m_graphics)
 	{
-		char title[32] = { 0 };
+		/*char title[32] = { 0 };
 		sprintf(title, "RPG - FPS: %.01f", 1.0/deltaTime);
-		m_graphics->SetWindowTitle(title);
-
+		m_graphics->SetWindowTitle(title);*/		
 		if (!m_graphics->UpdateWindow())
 		{
 			m_running = false;
@@ -94,14 +100,15 @@ bool Game::OnTick()
 		else if (scroll < 0.0f)
 		{
 			float zoom = m_graphics->GetCameraZoom() + (10.0f * deltaTime);
-			if (zoom > 2.5f)
-				zoom = 2.5f;
+			if (zoom > 1.5f)
+				zoom = 1.5f;
 			m_graphics->SetCameraZoom(zoom);
 		}
 
 		m_graphics->SetCameraPosition(m_player->GetPosition());
 
-		
+		m_baseFont->Draw(m_graphics, Vector2d(2, 2), Color(1, 0, 0, 0), "FPS: %.01f", 1 / deltaTime);
+		m_baseFont->Draw(m_graphics, Vector2d(1, 1), Color(1, 1, 1, 1), "FPS: %.01f", 1 / deltaTime);
 
 		m_graphics->PostRender();
 	}

@@ -18,6 +18,8 @@ private:
 	Level * m_level;
 	
 	bool m_running;
+
+	Font *m_baseFont;
 	
 	unsigned long long m_lastTick;
 public:

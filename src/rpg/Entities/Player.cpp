@@ -132,11 +132,11 @@ void Player::Render(Graphics& graphics)
 	graphics.DrawSprite(m_sprite, glm::translate(glm::mat4(), glm::vec3(100, 100, 0)) * glm::mat4(glm::rotate(glm::mat3(), r)));
 
 	// Draw hud
-	m_hudFont->Draw(&graphics, Vector2d(3, 24), Color(1, 0, 0, 0), "Run points:");
-	m_hudFont->Draw(&graphics, Vector2d(2, 23), Color(1, 1, 1, 1), "Run points:");
-	graphics.DrawRectangle(Rectangle(110, 20, 100, 20), Color(0.5f, 0, 0, 0));
-	graphics.DrawRectangle(Rectangle(112, 22, 96, 16), Color(0.5f, 1, 0.4f, 0));
-	graphics.DrawRectangle(Rectangle(112, 22, 96 * (m_runPoints / 10.0f), 16), Color(1.0f, 1, 0.4f, 0));
+	m_hudFont->Draw(&graphics, Vector2d(3, 24), Color(1, 0, 0, 0), "Run points (%d):", (int)ceil(m_runPoints));
+	m_hudFont->Draw(&graphics, Vector2d(2, 23), Color(1, 1, 1, 1), "Run points (%d):", (int)ceil(m_runPoints));
+	graphics.DrawRectangle(Rectangle(1, 40, 200, 20), Color(0.5f, 0, 0, 0));
+	graphics.DrawRectangle(Rectangle(3, 42, 196, 16), Color(0.5f, 1, 0.4f, 0));
+	graphics.DrawRectangle(Rectangle(3, 42, 196 * (m_runPoints / 10.0f), 16), Color(1.0f, 1, 0.4f, 0));
 	// sdsd
 }
 
@@ -215,7 +215,7 @@ void Player::Update(float deltaTime)
 		UpdateMatrix();
 		m_velocity /= 10 * deltaTime;
 
-		const char * desiredAnimation = Input::IsKeyDown(GLFW_KEY_LEFT_SHIFT) ? "Run" : "Walk";
+		const char * desiredAnimation = m_isRunning ? "Run" : "Walk";
 		if (strcmp(m_sprite->GetCurrentAnimName(), desiredAnimation) != 0)
 			m_sprite->PlayAnim(desiredAnimation);			
 	}

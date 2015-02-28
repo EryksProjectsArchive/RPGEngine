@@ -12,13 +12,13 @@ Animation:
 
 Animation:
 	Name		Walk
-	Interval	0.5
-	Frames		1, 2
+	Interval	0.25
+	Frames		1, 0, 2, 0
 
 Animation:
 	Name		Run
-	Interval	0.2
-	Frames		1, 2
+	Interval	0.18
+	Frames		1, 0, 2, 0
 
 Animation:
 	Name		Jump

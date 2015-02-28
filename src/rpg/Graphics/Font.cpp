@@ -65,7 +65,16 @@ Font::Font(const char *fileName)
 			}
 		}
 
+		if (!m_sprite)
+		{
+			Error("[font] No sprite set '%s'.", fileName);
+		}
+
 		fclose(fp);
+	}
+	else
+	{
+		Error("[font] Unable to create font '%s'.", fileName);
 	}
 }
 
@@ -80,6 +89,9 @@ Font::~Font()
 
 void Font::Draw(Graphics* graphics, const Vector2d& pos, const Color& color, const char *string, ...)
 {
+	if (!m_sprite)
+		return;
+
 	char buffer[512] = { 0 };
 	va_list args;
 	va_start(args, string);
