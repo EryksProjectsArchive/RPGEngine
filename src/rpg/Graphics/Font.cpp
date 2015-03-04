@@ -102,7 +102,7 @@ void Font::Draw(Graphics* graphics, const Vector2d& pos, const Color& color, con
 	Vector2d size = m_sprite->GetSize();
 	for (int i = 0; i < strlen(buffer); ++i)
 	{
-		char c = toupper(buffer[i]);
+		char c = toupper(buffer[i]); // TODO: Specify in font descriptor if we want to uppercase each character or perform any other operation.
 		GlyphData data = m_data[c];
 		if (data.isSet)
 		{

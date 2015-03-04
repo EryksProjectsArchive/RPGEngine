@@ -79,6 +79,9 @@ Graphics::Graphics()
 			glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, NULL, GL_DYNAMIC_DRAW); // GL_DYNAMIC_DRAW because we are updating vbo every sprite.
 			CATCH_ERROR
+
+
+			Info("[graphics] Vendor: %s, Device: %s, SL: %s", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_SHADING_LANGUAGE_VERSION));
 		} else {
 
 			glfwTerminate();
